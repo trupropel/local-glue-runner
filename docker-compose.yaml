@@ -1,24 +1,6 @@
 version: '3.8'
 
 services:
-  glue:
-    container_name: glue
-    build:
-      context: .
-      dockerfile: Dockerfile
-    stdin_open: true  # docker run -i
-    tty: true # docker run -t
-    # command: spark-submit /home/glue_user/workspace/src/my-job.py
-    environment:
-      DISABLE_SSL: 'true'
-      JOB_NAME: test
-      AWS_ACCESS_KEY_ID: local
-      AWS_SECRET_ACCESS_KEY: locallocal
-      AWS_REGION: us-east-1
-      GLUE_JOB_MODE: development
-    volumes:
-      - .:/home/glue_user/workspace:rw
-    network_mode: "host"
   s3:
     image: minio/minio:latest
     command: server /data --console-address ":43719"
@@ -34,3 +16,22 @@ services:
       - MINIO_ROOT_PASSWORD=locallocal
       - AWS_DEFAULT_REGION=us-east-1
       - AWS_ENDPOINT_URL=http://s3:9000
+  glue:
+    container_name: glue
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    environment:
+      DISABLE_SSL: 'true'
+      JOB_NAME: test
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: locallocal
+      AWS_REGION: us-east-1
+      GLUE_JOB_MODE: development
+    volumes:
+      - .:/home/glue_user/workspace:rw
+    network_mode: "host"
+    links:
+      - s3

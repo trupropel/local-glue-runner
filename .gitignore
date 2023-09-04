@@ -1,3 +1,4 @@
-data/*
+data/.minio.sys
+data/output/*
 
-!data/.keep
+!data/output/.keep
